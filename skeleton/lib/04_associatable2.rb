@@ -12,20 +12,11 @@ module Associatable
       source_options =
         through_options.model_class.assoc_options[source_name]
 
-        debugger
-        result = DBConnection.execute(<<-SQL, params.values)
-        SELECT
-          *
-        FROM
-          #{self.table_name}
-        JOIN
-          
-        WHERE
-          #{where_line}
-        SQL
+      through_id = send(through_options.foreign_key)
+      through = through_options.model_class.find(through_id)
 
-        self.parse_all(result)
-
+      source_id = through.send(source_options.foreign_key)
+      result = source_options.model_class.find(source_id)
 
     end
 
